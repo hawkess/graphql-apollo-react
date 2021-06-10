@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
  * @property {number} id - id of user
  * @property {string} name - name of the user
  * @property {string} email - email the user registered with
- * @property {Object[]} links - array of links the user has posted
+ * @property {Link[]} links - array of links the user has posted
  */
 
 /**
@@ -115,7 +115,7 @@ async function post(parent, args, context, info) {
  * @param {Object.<string, any>} args - Object containing new url and/or description to update
  * @param {{req: Object, prisma: Object, pubsub: Object, userId: number}} context - Context containing Prisma and PubSub instances and userId returned from getUserId() call if authorization headers are present
  * @param {*} info
- * @returns {{link: {id: number, url: string, description: string, postedBy: User, votes: Object[], createdAt: Date}}
+ * @returns {{link: Link}
  */
 
 async function updateLink(parent, args, context, info) {
@@ -140,7 +140,7 @@ async function updateLink(parent, args, context, info) {
  * @param {{id: string}} args - Id of post to delete
  * @param {{req: Object, prisma: Object, pubsub: Object, userId: number}} context - Context containing Prisma and PubSub instances and userId returned from getUserId() call if authorization headers are present
  * @param {*} info
- * @returns {{link: {id: number, url: string, description: string, postedBy: User, votes: Object[], createdAt: Date}}
+ * @returns {{link: Link}
  */
 
 async function deleteLink(parent, args, context, info) {
@@ -159,7 +159,7 @@ async function deleteLink(parent, args, context, info) {
  * @param {{oldPassword: string, newPassword: string}} args - Old password to authenticate against, new password to update to
  * @param {{req: Object, prisma: Object, pubsub: Object, userId: number}} context - Context containing Prisma and PubSub instances and userId returned from getUserId() call if authorization headers are present
  * @param {*} info
- * @returns {User}
+ * @returns {{token: Object, user: User}}
  */
 
 async function updateUser(parent, args, context, info) {
