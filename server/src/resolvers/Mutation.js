@@ -35,7 +35,7 @@ const jwt = require("jsonwebtoken");
  * @param {{email: string, password: string}} args - Object containing email and password properties
  * @param {{req: Object, prisma: Object, pubsub: Object, userId: number}} context - Context containing Prisma and PubSub instances and userId returned from getUserId() call if authorization headers are present
  * @param {*} info
- * @returns {{token: Object, user: User }}
+ * @returns {{token: Object, user: User}}
  */
 
 async function login(parent, args, context, info) {
@@ -88,7 +88,7 @@ async function signup(parent, args, context, info) {
  * @param {{email: string, name: string, password: string}} args - Object containing user-provided email, name, and password for registration
  * @param {{req: Object, prisma: Object, pubsub: Object, userId: number}} context - Context containing Prisma and PubSub instances and userId returned from getUserId() call if authorization headers are present
  * @param {*} info
- * @returns {{newLink: Link}
+ * @returns {Link}
  */
 
 async function post(parent, args, context, info) {
@@ -115,7 +115,7 @@ async function post(parent, args, context, info) {
  * @param {Object.<string, any>} args - Object containing new url and/or description to update
  * @param {{req: Object, prisma: Object, pubsub: Object, userId: number}} context - Context containing Prisma and PubSub instances and userId returned from getUserId() call if authorization headers are present
  * @param {*} info
- * @returns {{link: Link}
+ * @returns {Link}
  */
 
 async function updateLink(parent, args, context, info) {
@@ -198,7 +198,7 @@ async function updateUser(parent, args, context, info) {
  * @param {{linkId: string}} args - Object containing id of link to add vote to
  * @param {{req: Object, prisma: Object, pubsub: Object, userId: number}} context - Context containing Prisma and PubSub instances and userId returned from getUserId() call if authorization headers are present
  * @param {*} info
- * @returns {{newVote: {id: number, url: string, description: string, postedBy: User, votes: Object[], createdAt: Date}}
+ * @returns {Vote}
  */
 
 async function vote(parent, args, context, info) {
