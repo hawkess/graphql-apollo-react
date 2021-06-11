@@ -1,25 +1,35 @@
 import React from "react";
+import { useQuery, gql } from "@apollo/client";
+import { Container, Segment } from "semantic-ui-react";
+
 import Link from "./Link";
 
+const LINKS_QUERY = gql`
+  {
+    feed {
+      links {
+        id
+        createdAt
+        url
+        description
+      }
+    }
+  }
+`;
+
 const LinkList = (props) => {
-  const links = [
-    {
-      id: "1",
-      description: "Prisma gives you a powerful database toolkit 😎",
-      url: "https://prisma.io",
-    },
-    {
-      id: "2",
-      description: "The best GraphQL client",
-      url: "https://www.apollographql.com/docs/react/",
-    },
-  ];
+  const { data, loading, error } = useQuery(LINKS_QUERY);
+  if (loading) return "Loading...";
+  if (error) return `Error! ${error.message}`;
+
   return (
-    <div>
-      {links.map((link) => (
-        <Link key={link.id} link={link} />
-      ))}
-    </div>
+    <Container id="link-list">
+      <Segment.Group padded>
+        {data.feed.links.map((link) => (
+          <Link key={link.id} link={link} />
+        ))}
+      </Segment.Group>
+    </Container>
   );
 };
 

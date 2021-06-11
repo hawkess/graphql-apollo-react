@@ -1,13 +1,15 @@
 import React from "react";
+import { Segment, Header } from "semantic-ui-react";
 
 const Link = (props) => {
-  const { link } = props;
+  const { link, key } = props;
   return (
-    <div>
-      <div>
-        {link.description} ({link.url})
-      </div>
-    </div>
+    <Segment key={key} size="mini">
+      <Header as="a" href={`https://${link.url}`} size="small" color="teal">
+        {link.url}
+        <Header.Subheader>{link.description}</Header.Subheader>
+      </Header>
+    </Segment>
   );
 };
 
