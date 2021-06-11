@@ -112,7 +112,7 @@ async function post(parent, args, context, info) {
  * Update existing post in the database with new url/description value(s)
  *
  * @param {*} parent
- * @param {Object.<string, any>} args - Object containing new url and/or description to update
+ * @param {Object.<number, any>} args - Object containing id of the link and new string for url and/or description to update
  * @param {{req: Object, prisma: Object, pubsub: Object, userId: number}} context - Context containing Prisma and PubSub instances and userId returned from getUserId() call if authorization headers are present
  * @param {*} info
  * @returns {Link}
