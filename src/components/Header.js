@@ -2,9 +2,16 @@ import React from "react";
 import { useHistory } from "react-router";
 import { NavLink, withRouter } from "react-router-dom";
 import { Menu } from "semantic-ui-react";
+import { AUTH_TOKEN } from "../const";
 
 const Header = () => {
   const history = useHistory();
+  const authToken = localStorage.getItem(AUTH_TOKEN);
+  const logout = () => {
+    localStorage.removeItem(AUTH_TOKEN);
+    history.push("/");
+  };
+
   return (
     <Menu id="header" size="large" secondary>
       <a href="https://github.com/hawkess">
@@ -23,7 +30,15 @@ const Header = () => {
       >
         Create
       </NavLink>
-      <Menu.Item position="right">Log In</Menu.Item>
+      <NavLink
+        exact
+        to="/login"
+        className="item link right"
+        activeClassName="active"
+        onClick={authToken && logout}
+      >
+        {authToken ? "Sign out" : "Log in"}
+      </NavLink>
     </Menu>
   );
 };

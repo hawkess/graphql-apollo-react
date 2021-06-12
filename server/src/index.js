@@ -38,6 +38,12 @@ const server = new ApolloServer({
       userId: req && req.headers.authorization ? getUserId(req) : null,
     };
   },
+  formatError: (err) => {
+    if (err.message.startsWith("Database Error: ")) {
+      return new Error("Internal server error");
+    }
+    return err;
+  },
 });
 
 server.listen().then(({ url }) => console.log(`Server is running on ${url}`));
