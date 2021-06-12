@@ -2,7 +2,7 @@ import React from "react";
 import { useHistory } from "react-router";
 import { NavLink, withRouter } from "react-router-dom";
 import { Menu } from "semantic-ui-react";
-import { AUTH_TOKEN } from "../const";
+import { AUTH_TOKEN } from "../utils/const";
 
 const Header = () => {
   const history = useHistory();

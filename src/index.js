@@ -12,7 +12,7 @@ import { setContext } from "@apollo/client/link/context";
 
 import App from "./components/App";
 import "./styles/index.css";
-import { AUTH_TOKEN } from "./const";
+import { AUTH_TOKEN } from "./utils/const";
 
 const httpLink = createHttpLink({ uri: "http://localhost:4000" });
 const authLink = setContext((_, { headers }) => {
