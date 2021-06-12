@@ -24,7 +24,7 @@ const LinkList = (props) => {
 
   return (
     <Container id="link-list">
-      <Segment.Group padded>
+      <Segment.Group>
         {data.feed.links.map((link) => (
           <Link key={link.id} link={link} />
         ))}
