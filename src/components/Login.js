@@ -3,8 +3,8 @@ import { useHistory } from "react-router";
 import { useMutation, gql } from "@apollo/client";
 import { Button, Form, Grid, Header, Segment } from "semantic-ui-react";
 
-import { AUTH_TOKEN } from "../utils/const";
-import { handleError } from "../utils/loginHelper";
+import { AUTH_TOKEN, LOGIN_ERROR_FIELDS } from "../utils/const";
+import { handleError } from "../utils/errorHelper";
 
 const LOGIN_MUTATION = gql`
   mutation LoginMutation($email: String!, $password: String!) {
@@ -47,7 +47,8 @@ const Login = ({ setLoggedIn }) => {
       setLoggedIn(true);
     },
     onError: (err) => {
-      setFormData(handleError(err.message));
+      const errors = handleError(err.message, LOGIN_ERROR_FIELDS);
+      setFormData({ ...formData, errors: errors });
     },
   });
 
@@ -63,7 +64,8 @@ const Login = ({ setLoggedIn }) => {
       setLoggedIn(true);
     },
     onError: (err) => {
-      setFormData(handleError(err.message));
+      const errors = handleError(err.message, LOGIN_ERROR_FIELDS);
+      setFormData({ ...formData, errors: errors });
     },
   });
 
@@ -81,7 +83,6 @@ const Login = ({ setLoggedIn }) => {
       errors = err;
     }
     setFormData({ ...formData, errors: errors });
-    console.log(formData);
     if (formIsValid(formData.errors)) {
       if (formData.login) login();
       else signup();
@@ -89,7 +90,6 @@ const Login = ({ setLoggedIn }) => {
   };
 
   const formIsValid = (errors) => {
-    console.log(errors);
     let valid = true;
     Object.values(errors).forEach((err) => err.length > 0 && (valid = false));
     return valid;
