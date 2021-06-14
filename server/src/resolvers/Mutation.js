@@ -1,6 +1,7 @@
 const { APP_SECRET } = require("../utils");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { prisma } = require("@prisma/client");
 
 /**
  *
@@ -145,6 +146,17 @@ async function updateLink(parent, args, context, info) {
 
 async function deleteLink(parent, args, context, info) {
   const { userId } = context;
+  const update = await context.prisma.link.update({
+    where: {
+      id: Number(args.id),
+    },
+    data: {
+      votes: {
+        deleteMany: {},
+      },
+    },
+  });
+
   return await context.prisma.link.delete({
     where: {
       id: Number(args.id),
