@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { useMutation, gql } from "@apollo/client";
 import { Button, Form, Grid, Header, Segment } from "semantic-ui-react";
@@ -24,18 +24,21 @@ const SIGNUP_MUTATION = gql`
 
 const Login = ({ setLoggedIn }) => {
   const history = useHistory();
-  const [errorState, setErrorState] = useState(false);
   const [formData, setFormData] = useState({
     login: true,
-    email: "",
+    user: "",
     password: "",
     name: "",
+    errors: {
+      name: "",
+      user: "",
+      password: "",
+    },
   });
-  const errMessage = useRef({ user: "", email: "", password: "" });
 
   const [login] = useMutation(LOGIN_MUTATION, {
     variables: {
-      email: formData.email,
+      email: formData.user,
       password: formData.password,
     },
     onCompleted: ({ login }) => {
@@ -44,17 +47,14 @@ const Login = ({ setLoggedIn }) => {
       setLoggedIn(true);
     },
     onError: (err) => {
-      console.log(errMessage.current);
-      errMessage.current = handleError(err.message);
-      console.log(errMessage.current);
-      setErrorState(true);
+      setFormData(handleError(err.message));
     },
   });
 
   const [signup] = useMutation(SIGNUP_MUTATION, {
     variables: {
       name: formData.name,
-      email: formData.email,
+      email: formData.user,
       password: formData.password,
     },
     onCompleted: ({ signup }) => {
@@ -63,28 +63,58 @@ const Login = ({ setLoggedIn }) => {
       setLoggedIn(true);
     },
     onError: (err) => {
-      errMessage.current = handleError(err.message);
-      setErrorState(true);
+      setFormData(handleError(err.message));
     },
   });
 
-  const onClickLoginHelper = () => {
-    if (formData.email && formData.password) {
-      if (!formData.login && formData.name) {
-        signup();
-      }
-      formData.login && login();
-      setErrorState(false);
-      return;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    let errors = validate(name, value);
+    setFormData({ ...formData, [name]: value, errors: errors });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let errors = formData.errors;
+    for (const [k, v] of Object.entries(formData)) {
+      let err = validate(k, v);
+      errors = err;
     }
-    errMessage.current.name = formData.name ? "" : "Please enter a name";
-    errMessage.current.user = formData.email
-      ? ""
-      : "Please enter an email address";
-    errMessage.current.password = formData.password
-      ? ""
-      : "Please enter a password";
-    setErrorState(true);
+    setFormData({ ...formData, errors: errors });
+    console.log(formData);
+    if (formIsValid(formData.errors)) {
+      if (formData.login) login();
+      else signup();
+    }
+  };
+
+  const formIsValid = (errors) => {
+    console.log(errors);
+    let valid = true;
+    Object.values(errors).forEach((err) => err.length > 0 && (valid = false));
+    return valid;
+  };
+
+  const validate = (name, value) => {
+    let errors = formData.errors;
+    switch (name) {
+      case "name":
+        errors.name =
+          value.length < 4 && !formData.login
+            ? "Name must be at least 4 characters"
+            : "";
+        break;
+      case "user":
+        errors.user = value.length === 0 ? "Please provide an email" : "";
+        break;
+      case "password":
+        errors.password =
+          value.length < 6 ? "Password must be at least 6 characters" : "";
+        break;
+      default:
+        break;
+    }
+    return errors;
   };
 
   return (
@@ -101,46 +131,37 @@ const Login = ({ setLoggedIn }) => {
             {!formData.login && (
               <Form.Field>
                 <Form.Input
+                  name="name"
                   value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
+                  onChange={handleChange}
                   type="text"
                   placeholder="Enter your name"
                   error={
-                    errorState && errMessage.current.name
-                      ? errMessage.current.name
-                      : undefined
+                    formData.errors.name ? formData.errors.name : undefined
                   }
                 />
               </Form.Field>
             )}
             <Form.Field>
               <Form.Input
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
+                name="user"
+                value={formData.user}
+                onChange={handleChange}
                 type="text"
-                placeholder="Enter your email"
-                error={
-                  errorState && errMessage.current.user
-                    ? errMessage.current.user
-                    : undefined
-                }
+                placeholder="Enter your user"
+                error={formData.errors.user ? formData.errors.user : undefined}
               />
             </Form.Field>
             <Form.Field>
               <Form.Input
+                name="password"
                 value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
+                onChange={handleChange}
                 type="password"
                 placeholder="Enter your password"
                 error={
-                  errorState && errMessage.current.password
-                    ? errMessage.current.password
+                  formData.errors.password
+                    ? formData.errors.password
                     : undefined
                 }
               />
@@ -149,7 +170,7 @@ const Login = ({ setLoggedIn }) => {
               className="form-button"
               fluid
               color={formData.login ? "teal" : "blue"}
-              onClick={onClickLoginHelper}
+              onClick={handleSubmit}
             >
               {formData.login ? "Login" : "Create Account"}
             </Button>
@@ -159,7 +180,6 @@ const Login = ({ setLoggedIn }) => {
               color="black"
               onClick={(e) => {
                 setFormData({ ...formData, login: !formData.login });
-                setErrorState(false);
               }}
             >
               {formData.login

@@ -18,9 +18,8 @@ body {
 }
 
 #link-list {
-  margin-top: 30px;
+  margin-top: 1.5em;
   max-width: 50% !important;
-  min-width: fit-content;
 }
 
 #root {
