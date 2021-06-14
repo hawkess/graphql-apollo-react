@@ -1,8 +1,10 @@
 import React from "react";
 import { useHistory } from "react-router";
-import { NavLink, withRouter } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { Menu } from "semantic-ui-react";
+
 import { AUTH_TOKEN } from "../utils/const";
+import Search from "./Search";
 
 const Header = () => {
   const history = useHistory();
@@ -39,6 +41,9 @@ const Header = () => {
       >
         {authToken ? "Sign out" : "Log in"}
       </NavLink>
+      <Menu.Item position="right">
+        <Search />
+      </Menu.Item>
     </Menu>
   );
 };

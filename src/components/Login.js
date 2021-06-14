@@ -1,26 +1,11 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { useMutation, gql } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { Button, Form, Grid, Header, Segment } from "semantic-ui-react";
 
+import { LOGIN_MUTATION, SIGNUP_MUTATION } from "../graphql/mutations";
 import { AUTH_TOKEN, LOGIN_ERROR_FIELDS } from "../utils/const";
 import { handleError } from "../utils/errorHelper";
-
-const LOGIN_MUTATION = gql`
-  mutation LoginMutation($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
-      token
-    }
-  }
-`;
-
-const SIGNUP_MUTATION = gql`
-  mutation SignupMutation($name: String!, $email: String!, $password: String!) {
-    signup(name: $name, email: $email, password: $password) {
-      token
-    }
-  }
-`;
 
 const Login = ({ setLoggedIn }) => {
   const history = useHistory();

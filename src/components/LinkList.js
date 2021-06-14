@@ -1,34 +1,12 @@
 import React from "react";
-import { useQuery, gql } from "@apollo/client";
-import { Container, Segment, List } from "semantic-ui-react";
+import { useQuery } from "@apollo/client";
+import { Container, List } from "semantic-ui-react";
 
+import { FEED_QUERY } from "../graphql/queries";
 import Link from "./Link";
 
-const LINKS_QUERY = gql`
-  {
-    feed {
-      links {
-        id
-        createdAt
-        url
-        description
-        postedBy {
-          id
-          name
-        }
-        votes {
-          id
-          user {
-            id
-          }
-        }
-      }
-    }
-  }
-`;
-
 const LinkList = (props) => {
-  const { data, loading, error } = useQuery(LINKS_QUERY);
+  const { data, loading, error } = useQuery(FEED_QUERY);
   if (loading) return "Loading...";
   if (error) return `Error! ${error.message}`;
 

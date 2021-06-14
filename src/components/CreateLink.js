@@ -1,25 +1,16 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { useMutation, gql } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { Button, Form, Grid, Header, Segment } from "semantic-ui-react";
 
+import { LINKS_PER_PAGE } from "../utils/const";
+import { CREATE_LINK_MUTATION } from "../graphql/mutations";
 import { CREATE_LINK_ERROR_FIELDS } from "../utils/const";
 import { handleError } from "../utils/errorHelper";
-
-const CREATE_LINK_MUTATION = gql`
-  mutation PostMutation($description: String!, $url: String!) {
-    post(description: $description, url: $url) {
-      id
-      createdAt
-      url
-      description
-    }
-  }
-`;
+import { FEED_QUERY } from "../graphql/queries";
 
 const CreateLink = () => {
   const history = useHistory();
-
   const [formData, setFormData] = useState({
     description: "",
     url: "",
@@ -34,7 +25,35 @@ const CreateLink = () => {
       description: formData.description,
       url: formData.url,
     },
-    onCompleted: () => history.push("/"),
+    update: (cache, { data: { post } }) => {
+      const take = LINKS_PER_PAGE;
+      const skip = 0;
+      const orderBy = { createdAt: "desc" };
+
+      const data = cache.readQuery({
+        query: FEED_QUERY,
+        variables: {
+          take,
+          skip,
+          orderBy,
+        },
+      });
+
+      cache.writeQuery({
+        query: FEED_QUERY,
+        data: {
+          feed: {
+            links: [post, ...data.feed.links],
+          },
+        },
+        variables: {
+          take,
+          skip,
+          orderBy,
+        },
+      });
+    },
+    onCompleted: () => history.push("/new/1"),
     onError: (err) => {
       const errors = handleError(err.message, CREATE_LINK_ERROR_FIELDS);
       setFormData({ ...formData, errors: errors });

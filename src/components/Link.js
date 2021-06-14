@@ -1,5 +1,9 @@
+import { useMutation } from "@apollo/client";
 import React from "react";
 import { List } from "semantic-ui-react";
+
+import { FEED_QUERY } from "../graphql/queries";
+import { VOTE_MUTATION } from "../graphql/mutations";
 import { AUTH_TOKEN, LINKS_PER_PAGE } from "../utils/const";
 import { timeDifferenceForDate } from "../utils/timeDifference";
 
@@ -11,6 +15,33 @@ const Link = (props) => {
   const skip = 0;
   const orderBy = { createdAt: "desc" };
 
+  const [vote] = useMutation(VOTE_MUTATION, {
+    variables: {
+      linkId: link.id,
+    },
+    update(cache, { data: { vote } }) {
+      const { feed } = cache.readQuery({
+        query: FEED_QUERY,
+      });
+
+      const updatedLinks = feed.links.map((feedLink) => {
+        if (feedLink.id === link.id) {
+          return [...feedLink.votes, vote];
+        }
+        return feedLink;
+      });
+
+      cache.writeQuery({
+        query: FEED_QUERY,
+        data: {
+          feed: {
+            links: updatedLinks,
+          },
+        },
+      });
+    },
+  });
+
   return (
     <List.Item>
       {authToken && (
@@ -19,6 +50,7 @@ const Link = (props) => {
           verticalAlign="middle"
           size="small"
           style={{ cursor: "pointer" }}
+          onClick={() => authToken && vote()}
         />
       )}
       <List.Content>
