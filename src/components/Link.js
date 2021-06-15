@@ -82,25 +82,24 @@ const Link = (props) => {
 
   return (
     <List.Item>
-      {authToken && (
-        <List.Icon
-          name="heart"
-          verticalAlign="middle"
-          size="small"
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            if (authToken) {
-              voted && deleteVote();
-              !voted && vote();
-            }
-          }}
-          color={
-            link.votes.filter((vote) => vote.user.id === userId).length > 0
-              ? "red"
-              : "grey"
+      <List.Icon
+        name="heart"
+        verticalAlign="middle"
+        size="small"
+        style={authToken ? { cursor: "pointer" } : {}}
+        disabled={!authToken}
+        onClick={() => {
+          if (authToken) {
+            voted && deleteVote();
+            !voted && vote();
           }
-        />
-      )}
+        }}
+        color={
+          link.votes.filter((vote) => vote.user.id === userId).length > 0
+            ? "red"
+            : "grey"
+        }
+      />
       <List.Content>
         <List.Header
           as="a"
@@ -110,13 +109,11 @@ const Link = (props) => {
         >
           {link.description} ({link.url})
         </List.Header>
-        {authToken && (
-          <List.Description>
-            {link.votes.length} votes | posted by{" "}
-            {link.postedBy ? link.postedBy.name : "Unknown"}{" "}
-            {timeDifferenceForDate(link.createdAt)}{" "}
-          </List.Description>
-        )}
+        <List.Description>
+          {link.votes.length} votes | posted by{" "}
+          {link.postedBy ? link.postedBy.name : "Unknown"}{" "}
+          {timeDifferenceForDate(link.createdAt)}{" "}
+        </List.Description>
       </List.Content>
     </List.Item>
   );

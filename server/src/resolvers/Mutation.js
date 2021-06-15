@@ -146,7 +146,7 @@ async function updateLink(parent, args, context, info) {
 
 async function deleteLink(parent, args, context, info) {
   const { userId } = context;
-  const update = await context.prisma.link.update({
+  await context.prisma.link.update({
     where: {
       id: Number(args.id),
     },
@@ -189,13 +189,13 @@ async function updateUser(parent, args, context, info) {
   /**
    * @type {User}
    */
-  const updatedUser = await context.prisma.user.update({
+  await context.prisma.user.update({
     where: { id: userId },
     data: {
       password: password,
     },
   });
-  console.log(updatedUser);
+
   const token = jwt.sign({ userId: userId }, APP_SECRET);
   return {
     token,

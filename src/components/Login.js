@@ -114,20 +114,17 @@ const Login = ({ setLoggedIn }) => {
               e.preventDefault();
             }}
           >
-            {!formData.login && (
-              <Form.Field>
-                <Form.Input
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  type="text"
-                  placeholder="Enter your name"
-                  error={
-                    formData.errors.name ? formData.errors.name : undefined
-                  }
-                />
-              </Form.Field>
-            )}
+            <Form.Field>
+              <Form.Input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                type="text"
+                placeholder="Enter your name"
+                disabled={formData.login}
+                error={formData.errors.name ? formData.errors.name : undefined}
+              />
+            </Form.Field>
             <Form.Field>
               <Form.Input
                 name="user"
