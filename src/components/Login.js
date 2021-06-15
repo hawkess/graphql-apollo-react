@@ -4,7 +4,7 @@ import { useMutation } from "@apollo/client";
 import { Button, Form, Grid, Header, Segment } from "semantic-ui-react";
 
 import { LOGIN_MUTATION, SIGNUP_MUTATION } from "../graphql/mutations";
-import { AUTH_TOKEN, LOGIN_ERROR_FIELDS } from "../utils/const";
+import { AUTH_TOKEN, LOGIN_ERROR_FIELDS, USER_ID } from "../utils/const";
 import { handleError } from "../utils/errorHelper";
 
 const Login = ({ setLoggedIn }) => {
@@ -28,6 +28,7 @@ const Login = ({ setLoggedIn }) => {
     },
     onCompleted: ({ login }) => {
       localStorage.setItem(AUTH_TOKEN, login.token); // TODO: move jwt to httpOnly cookie rather than localstorage
+      localStorage.setItem(USER_ID, login.user.id);
       history.push("/");
       setLoggedIn(true);
     },

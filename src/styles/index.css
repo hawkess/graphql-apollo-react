@@ -12,14 +12,8 @@ body {
   width: 100%;
 }
 
-#header {
-  margin: auto;
-  max-width: 50%;
-}
-
 #link-list {
   margin-top: 1.5em;
-  max-width: 50% !important;
 }
 
 #root {

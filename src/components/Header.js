@@ -3,14 +3,14 @@ import { useHistory } from "react-router";
 import { NavLink } from "react-router-dom";
 import { Menu } from "semantic-ui-react";
 
-import { AUTH_TOKEN } from "../utils/const";
-import Search from "./Search";
+import { AUTH_TOKEN, USER_ID } from "../utils/const";
 
 const Header = () => {
   const history = useHistory();
   const authToken = localStorage.getItem(AUTH_TOKEN);
   const logout = () => {
     localStorage.removeItem(AUTH_TOKEN);
+    localStorage.removeItem(USER_ID);
     history.push("/");
   };
 
@@ -41,9 +41,6 @@ const Header = () => {
       >
         {authToken ? "Sign out" : "Log in"}
       </NavLink>
-      <Menu.Item position="right">
-        <Search />
-      </Menu.Item>
     </Menu>
   );
 };

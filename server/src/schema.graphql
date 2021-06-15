@@ -11,6 +11,7 @@ type Mutation {
   signup(email: String!, password: String!, name: String!): AuthPayLoad
   login(email: String!, password: String!): AuthPayLoad
   vote(linkId: ID!): Vote
+  deleteVote(linkId: ID!, userId: ID!): Vote
 }
 
 type AuthPayLoad {
@@ -37,6 +38,7 @@ type User {
   name: String!
   email: String!
   links: [Link!]!
+  votes: [Vote!]!
 }
 
 type Subscription {

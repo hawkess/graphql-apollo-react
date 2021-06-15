@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const FEED_QUERY = gql`
-  {
+  query getFeed {
     feed {
       links {
         id

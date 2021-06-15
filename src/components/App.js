@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Switch, Route } from "react-router-dom";
+import { Container } from "semantic-ui-react";
 
 import "../styles/App.css";
 import CreateLink from "./CreateLink";
@@ -10,20 +11,18 @@ import Login from "./Login";
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   return (
-    <div>
+    <Container text id="parent-container">
       <Header loggedin={loggedIn} />
-      <div>
-        <Switch>
-          <Route exact path="/" component={LinkList} />
-          <Route exact path="/create" component={CreateLink} />
-          <Route
-            exact
-            path="/login"
-            render={() => <Login setLoggedIn={setLoggedIn} />}
-          />
-        </Switch>
-      </div>
-    </div>
+      <Switch>
+        <Route exact path="/" component={LinkList} />
+        <Route exact path="/create" component={CreateLink} />
+        <Route
+          exact
+          path="/login"
+          render={() => <Login setLoggedIn={setLoggedIn} />}
+        />
+      </Switch>
+    </Container>
   );
 };
 

@@ -1,15 +1,19 @@
 import { useMutation } from "@apollo/client";
-import React from "react";
+import React, { useState } from "react";
 import { List } from "semantic-ui-react";
 
 import { FEED_QUERY } from "../graphql/queries";
-import { VOTE_MUTATION } from "../graphql/mutations";
-import { AUTH_TOKEN, LINKS_PER_PAGE } from "../utils/const";
+import { DELETE_VOTE_MUTATION, VOTE_MUTATION } from "../graphql/mutations";
+import { AUTH_TOKEN, LINKS_PER_PAGE, USER_ID } from "../utils/const";
 import { timeDifferenceForDate } from "../utils/timeDifference";
 
 const Link = (props) => {
   const { link } = props;
   const authToken = localStorage.getItem(AUTH_TOKEN);
+  const userId = authToken ? localStorage.getItem(USER_ID) : undefined;
+  const [voted, setVoted] = useState(
+    link.votes.filter((vote) => vote.user.id === userId).length > 0
+  );
 
   const take = LINKS_PER_PAGE;
   const skip = 0;
@@ -40,6 +44,40 @@ const Link = (props) => {
         },
       });
     },
+    onCompleted: () => {
+      setVoted(true);
+    },
+  });
+
+  const [deleteVote] = useMutation(DELETE_VOTE_MUTATION, {
+    variables: {
+      linkId: link.id,
+      userId: userId,
+    },
+    update(cache, { data: { deleteVote } }) {
+      const { feed } = cache.readQuery({
+        query: FEED_QUERY,
+      });
+
+      const updatedLinks = feed.links.map((feedLink) => {
+        return {
+          ...feedLink,
+          votes: feedLink.votes.filter((vote) => deleteVote.id !== vote.id),
+        };
+      });
+
+      cache.writeQuery({
+        query: FEED_QUERY,
+        data: {
+          feed: {
+            links: updatedLinks,
+          },
+        },
+      });
+    },
+    onCompleted: () => {
+      setVoted(false);
+    },
   });
 
   return (
@@ -50,7 +88,17 @@ const Link = (props) => {
           verticalAlign="middle"
           size="small"
           style={{ cursor: "pointer" }}
-          onClick={() => authToken && vote()}
+          onClick={() => {
+            if (authToken) {
+              voted && deleteVote();
+              !voted && vote();
+            }
+          }}
+          color={
+            link.votes.filter((vote) => vote.user.id === userId).length > 0
+              ? "red"
+              : "grey"
+          }
         />
       )}
       <List.Content>

@@ -245,6 +245,43 @@ async function vote(parent, args, context, info) {
   return newVote;
 }
 
+/**
+ * Delete existing vote
+ *
+ * @param {*} parent
+ * @param {{linkId: string, userId: string}} args - id of post to delete vote from, id of user whose vote to delete
+ * @param {{req: Object, prisma: Object, pubsub: Object, userId: number}} context - Context containing Prisma and PubSub instances and userId returned from getUserId() call if authorization headers are present
+ * @param {*} info
+ * @returns {{link: Link}
+ */
+
+async function deleteVote(parent, args, context, info) {
+  const { userId } = context;
+  const vote = await context.prisma.vote.findUnique({
+    where: {
+      linkId_userId: {
+        linkId: Number(args.linkId),
+        userId: Number(args.userId),
+      },
+    },
+  });
+
+  const deleted = await context.prisma.link.update({
+    where: {
+      id: Number(args.linkId),
+    },
+    data: {
+      votes: {
+        delete: {
+          id: vote.id,
+        },
+      },
+    },
+  });
+
+  return vote;
+}
+
 module.exports = {
   signup,
   login,
@@ -253,4 +290,5 @@ module.exports = {
   deleteLink,
   updateUser,
   vote,
+  deleteVote,
 };

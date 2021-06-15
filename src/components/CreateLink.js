@@ -53,7 +53,7 @@ const CreateLink = () => {
         },
       });
     },
-    onCompleted: () => history.push("/new/1"),
+    onCompleted: () => history.push("/"),
     onError: (err) => {
       const errors = handleError(err.message, CREATE_LINK_ERROR_FIELDS);
       setFormData({ ...formData, errors: errors });
