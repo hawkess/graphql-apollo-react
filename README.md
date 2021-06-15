@@ -1,6 +1,6 @@
 ### Reddit/Hackernews/Generic link aggregator clone
 
-Made using Node/Prisma/SQLite on the backend and Apollo/React on the frontend with GraphQL.
+Made using Node/Prisma/SQLite on the backend and React on the frontend with Apollo/GraphQL for the data layer.
 
 ### Work in progress:
 
