@@ -1,7 +1,6 @@
 const { APP_SECRET } = require("../utils");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { prisma } = require("@prisma/client");
 
 /**
  *

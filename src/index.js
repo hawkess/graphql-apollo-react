@@ -8,13 +8,15 @@ import {
   InMemoryCache,
 } from "@apollo/client";
 
+import { onError } from "apollo-link-error";
+import { ApolloLink } from "apollo-link";
+
 import { setContext } from "@apollo/client/link/context";
 
 import App from "./components/App";
 import "./styles/index.css";
 import { AUTH_TOKEN } from "./utils/const";
 
-const httpLink = createHttpLink({ uri: "http://localhost:4000" });
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem(AUTH_TOKEN);
   return {
@@ -24,9 +26,18 @@ const authLink = setContext((_, { headers }) => {
     },
   };
 });
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    console.log("graphQLErrors", graphQLErrors);
+  }
+  if (networkError) {
+    console.log("networkError", networkError);
+  }
+});
+const httpLink = createHttpLink({ uri: "http://localhost:4000" });
 
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: ApolloLink.from([authLink, errorLink, httpLink]),
   cache: new InMemoryCache({
     typePolicies: {
       Query: {
