@@ -24,8 +24,8 @@ export const FEED_QUERY = gql`
 `;
 
 export const FEED_SEARCH_QUERY = gql`
-  query feedSearch($filter: String!) {
-    feed(filter: $filter) {
+  query feedSearch($filter: String!, $orderBy: LinkOrderByInput!) {
+    feed(filter: $filter, orderBy: $orderBy) {
       links {
         id
         url

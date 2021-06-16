@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useLazyQuery, useQuery } from "@apollo/client";
-import gql from "graphql-tag";
+import React, { useState } from "react";
+import { useQuery } from "@apollo/client";
 import {
   Container,
   Header,
@@ -15,25 +14,23 @@ import Link from "./Link";
 import Search from "./Search";
 
 const LinkList = () => {
-  //const { data, loading, error } = useQuery(FEED_QUERY);
   const [filter, setFilter] = useState("");
-  const [executeSearch, { data, loading, error }] =
-    useLazyQuery(FEED_SEARCH_QUERY);
-
-  useEffect(() => {
-    console.log(filter);
-    executeSearch({
-      variables: {
-        filter: filter,
-      },
-    });
-  }, [executeSearch, filter]);
+  const [sortBy, setSortBy] = useState({ orderBy: "createdAt", sort: "asc" });
+  const orderBy = { [sortBy.orderBy]: sortBy.sort };
+  console.log(orderBy);
+  const { data, loading, error } = useQuery(FEED_SEARCH_QUERY, {
+    variables: { filter: filter, orderBy: orderBy },
+  });
 
   return (
     <Container id="link-list" text>
       <Segment>
-        <Search setFilter={setFilter} />
-        {loading && <Loader active content="Loading" />}
+        <Search setFilter={setFilter} setSortBy={setSortBy} />
+        {loading && (
+          <Segment placeholder>
+            <Loader active content="Loading" />
+          </Segment>
+        )}
         {data && (
           <List ordered relaxed>
             {data.feed.links.map((link, index) => (

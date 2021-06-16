@@ -3,44 +3,44 @@ import { Dropdown, Input, Menu } from "semantic-ui-react";
 
 import { AUTH_TOKEN } from "../utils/const";
 
-const Search = ({ setFilter }) => {
-  const authToken = localStorage.getItem(AUTH_TOKEN);
+const Search = ({ setFilter, setSortBy }) => {
   const [searchData, setSearchData] = useState("");
+  const [orderBy, setOrderBy] = useState({ orderBy: "createdAt", sort: "asc" });
+  const options = [
+    { key: "new", text: "new", value: "createdAt", icon: "calendar outline" },
+    { key: "top", text: "top", value: "votes", icon: "star" },
+  ];
 
   useEffect(() => {
-    if (searchData) {
-      const timeoutId = setTimeout(() => {
-        setFilter(searchData);
-      }, 1000);
+    setSortBy(orderBy);
+    const timeoutId = setTimeout(() => {
+      setFilter(searchData);
+    }, 1000);
 
-      return () => {
-        clearTimeout(timeoutId);
-      };
-    }
-  }, [setFilter, searchData]);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [setFilter, searchData, setSortBy, orderBy]);
+
+  const handleDropdown = (e, { value }) => {
+    setOrderBy({ ...orderBy, orderBy: value });
+  };
 
   return (
     <Menu stackable size="small">
       <Menu.Item>
-        <Dropdown defaultValue="new" text="sort by">
-          <Dropdown.Menu>
-            <Dropdown.Item value="new" text="new" icon="calendar outline" />
-            <Dropdown.Item value="top" text="top" icon="star" />
-            {authToken && (
-              <Dropdown.Item value="votes" text="my votes" icon="heart" />
-            )}
-            {authToken && (
-              <Dropdown.Item
-                value="posts"
-                text="my posts"
-                icon="file outline"
-              />
-            )}
-          </Dropdown.Menu>
-        </Dropdown>
+        <Dropdown
+          text="sort by"
+          options={options}
+          onChange={handleDropdown}
+        ></Dropdown>
+        <div style={{ marginLeft: "5px" }}>
+          {orderBy.orderBy === "createdAt" ? "new" : "top"}
+        </div>
       </Menu.Item>
       <Menu.Item position="right">
         <Input
+          name="filter"
           icon="filter"
           iconPosition="left"
           placeholder="Filter results..."

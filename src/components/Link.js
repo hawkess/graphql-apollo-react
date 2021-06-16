@@ -1,8 +1,6 @@
-import { useMutation } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import React, { useState } from "react";
 import { List } from "semantic-ui-react";
-
-import { FEED_QUERY } from "../graphql/queries";
 import { DELETE_VOTE_MUTATION, VOTE_MUTATION } from "../graphql/mutations";
 import { AUTH_TOKEN, USER_ID } from "../utils/const";
 import { timeDifferenceForDate } from "../utils/timeDifference";
@@ -20,22 +18,25 @@ const Link = (props) => {
       linkId: link.id,
     },
     update(cache, { data: { vote } }) {
-      const { feed } = cache.readQuery({
-        query: FEED_QUERY,
-      });
+      cache.modify({
+        id: cache.identify(link),
+        fields: {
+          votes(existingVotes, { readField }) {
+            const newVote = cache.writeFragment({
+              data: vote,
+              fragment: gql`
+                fragment NewVote on Vote {
+                  id
+                  user
+                  link
+                }
+              `,
+            });
+            if (existingVotes.some((ref) => readField("id", ref) === vote.id)) {
+              return existingVotes;
+            }
 
-      const updatedLinks = feed.links.map((feedLink) => {
-        if (feedLink.id === link.id) {
-          return [...feedLink.votes, vote];
-        }
-        return feedLink;
-      });
-
-      cache.writeQuery({
-        query: FEED_QUERY,
-        data: {
-          feed: {
-            links: updatedLinks,
+            return [...existingVotes, newVote];
           },
         },
       });
@@ -51,22 +52,13 @@ const Link = (props) => {
       userId: userId,
     },
     update(cache, { data: { deleteVote } }) {
-      const { feed } = cache.readQuery({
-        query: FEED_QUERY,
-      });
-
-      const updatedLinks = feed.links.map((feedLink) => {
-        return {
-          ...feedLink,
-          votes: feedLink.votes.filter((vote) => deleteVote.id !== vote.id),
-        };
-      });
-
-      cache.writeQuery({
-        query: FEED_QUERY,
-        data: {
-          feed: {
-            links: updatedLinks,
+      cache.modify({
+        id: cache.identify(link),
+        fields: {
+          votes(existingVotes, { readField }) {
+            return existingVotes.filter(
+              (voteRef) => deleteVote.id !== readField("id", voteRef)
+            );
           },
         },
       });

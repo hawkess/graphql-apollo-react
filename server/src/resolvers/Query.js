@@ -12,6 +12,7 @@ async function feed(parent, args, context, info) {
     args.orderBy && "votes" in args.orderBy
       ? { votes: { count: args.orderBy.votes } }
       : args.orderBy;
+
   const links = await context.prisma.link.findMany({
     where,
     skip: args.skip,
