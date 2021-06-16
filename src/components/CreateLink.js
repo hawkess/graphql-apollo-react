@@ -7,9 +7,9 @@ import { LINKS_PER_PAGE } from "../utils/const";
 import { CREATE_LINK_MUTATION } from "../graphql/mutations";
 import { CREATE_LINK_ERROR_FIELDS } from "../utils/const";
 import { handleError } from "../utils/errorHelper";
-import { FEED_QUERY } from "../graphql/queries";
+import { FEED_SEARCH_QUERY } from "../graphql/queries";
 
-const CreateLink = () => {
+const CreateLink = (props) => {
   const history = useHistory();
   const [formData, setFormData] = useState({
     description: "",
@@ -25,34 +25,15 @@ const CreateLink = () => {
       description: formData.description,
       url: formData.url,
     },
-    update: (cache, { data: { post } }) => {
-      const take = LINKS_PER_PAGE;
-      const skip = 0;
-      const orderBy = { createdAt: "desc" };
-
-      const data = cache.readQuery({
-        query: FEED_QUERY,
+    refetchQueries: [
+      {
+        query: FEED_SEARCH_QUERY,
         variables: {
-          take,
-          skip,
-          orderBy,
+          filter: "",
+          orderBy: { createdAt: "asc" },
         },
-      });
-
-      cache.writeQuery({
-        query: FEED_QUERY,
-        data: {
-          feed: {
-            links: [post, ...data.feed.links],
-          },
-        },
-        variables: {
-          take,
-          skip,
-          orderBy,
-        },
-      });
-    },
+      },
+    ],
     onCompleted: () => history.push("/"),
     onError: (err) => {
       const errors = handleError(err.message, CREATE_LINK_ERROR_FIELDS);
