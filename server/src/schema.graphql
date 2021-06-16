@@ -53,9 +53,8 @@ type Vote {
 }
 
 input LinkOrderByInput {
-  description: Sort
-  url: Sort
   createdAt: Sort
+  votes: Sort
 }
 
 enum Sort {

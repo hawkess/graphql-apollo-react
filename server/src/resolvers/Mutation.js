@@ -265,7 +265,7 @@ async function deleteVote(parent, args, context, info) {
     },
   });
 
-  const deleted = await context.prisma.link.update({
+  await context.prisma.link.update({
     where: {
       id: Number(args.linkId),
     },
