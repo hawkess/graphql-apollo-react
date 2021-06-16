@@ -3,11 +3,11 @@ import { useHistory } from "react-router";
 import { useMutation } from "@apollo/client";
 import { Button, Form, Grid, Header, Segment } from "semantic-ui-react";
 
+import { FEED_SEARCH_QUERY } from "../graphql/queries";
 import { LINKS_PER_PAGE } from "../utils/const";
 import { CREATE_LINK_MUTATION } from "../graphql/mutations";
 import { CREATE_LINK_ERROR_FIELDS } from "../utils/const";
 import { handleError } from "../utils/errorHelper";
-import { FEED_SEARCH_QUERY } from "../graphql/queries";
 
 const CreateLink = (props) => {
   const history = useHistory();
@@ -61,7 +61,6 @@ const CreateLink = (props) => {
   };
 
   const formIsValid = (errors) => {
-    console.log(errors);
     let valid = true;
     Object.values(errors).forEach((err) => err.length > 0 && (valid = false));
     return valid;

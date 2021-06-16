@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Dropdown, Input, Menu } from "semantic-ui-react";
-
-import { AUTH_TOKEN } from "../utils/const";
+import { Dropdown, Icon, Input, Menu } from "semantic-ui-react";
 
 const Search = ({ setFilter, setSortBy }) => {
   const [searchData, setSearchData] = useState("");
-  const [orderBy, setOrderBy] = useState({ orderBy: "createdAt", sort: "asc" });
+  const [orderBy, setOrderBy] = useState({ orderBy: "createdAt", asc: true });
   const options = [
     { key: "new", text: "new", value: "createdAt", icon: "calendar outline" },
     { key: "top", text: "top", value: "votes", icon: "star" },
@@ -34,9 +32,16 @@ const Search = ({ setFilter, setSortBy }) => {
           options={options}
           onChange={handleDropdown}
         ></Dropdown>
-        <div style={{ marginLeft: "5px" }}>
+        <span style={{ margin: "0 5px" }}>
           {orderBy.orderBy === "createdAt" ? "new" : "top"}
-        </div>
+        </span>
+        <Icon
+          name={
+            orderBy.asc ? "sort content ascending" : "sort content descending"
+          }
+          onClick={() => setOrderBy({ ...orderBy, asc: !orderBy.asc })}
+          style={{ cursor: "pointer" }}
+        />
       </Menu.Item>
       <Menu.Item position="right">
         <Input
