@@ -4,7 +4,7 @@ import { List } from "semantic-ui-react";
 
 import { FEED_QUERY } from "../graphql/queries";
 import { DELETE_VOTE_MUTATION, VOTE_MUTATION } from "../graphql/mutations";
-import { AUTH_TOKEN, LINKS_PER_PAGE, USER_ID } from "../utils/const";
+import { AUTH_TOKEN, USER_ID } from "../utils/const";
 import { timeDifferenceForDate } from "../utils/timeDifference";
 
 const Link = (props) => {
@@ -14,10 +14,6 @@ const Link = (props) => {
   const [voted, setVoted] = useState(
     link.votes.filter((vote) => vote.user.id === userId).length > 0
   );
-
-  const take = LINKS_PER_PAGE;
-  const skip = 0;
-  const orderBy = { createdAt: "desc" };
 
   const [vote] = useMutation(VOTE_MUTATION, {
     variables: {

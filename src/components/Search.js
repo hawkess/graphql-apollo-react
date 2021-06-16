@@ -1,14 +1,23 @@
-import React, { useState } from "react";
-import { useLazyQuery } from "@apollo/client";
-import gql from "graphql-tag";
+import React, { useEffect, useState } from "react";
 import { Dropdown, Input, Menu } from "semantic-ui-react";
+
 import { AUTH_TOKEN } from "../utils/const";
 
-import Link from "./Link";
-
-const Search = () => {
-  const [filter, setFilter] = useState("");
+const Search = ({ setFilter }) => {
   const authToken = localStorage.getItem(AUTH_TOKEN);
+  const [searchData, setSearchData] = useState("");
+
+  useEffect(() => {
+    if (searchData) {
+      const timeoutId = setTimeout(() => {
+        setFilter(searchData);
+      }, 1000);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [setFilter, searchData]);
 
   return (
     <Menu stackable size="small">
@@ -35,6 +44,8 @@ const Search = () => {
           icon="filter"
           iconPosition="left"
           placeholder="Filter results..."
+          value={searchData}
+          onChange={(e) => setSearchData(e.target.value)}
         />
       </Menu.Item>
     </Menu>
