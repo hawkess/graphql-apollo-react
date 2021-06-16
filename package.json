@@ -49,6 +49,6 @@
     ]
   },
   "devDependencies": {
-    "prisma": "^2.24.1"
+    "prisma": "^2.25.0"
   }
 }
