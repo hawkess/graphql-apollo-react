@@ -46,6 +46,7 @@ const Login = ({ setLoggedIn }) => {
     },
     onCompleted: ({ signup }) => {
       localStorage.setItem(AUTH_TOKEN, signup.token); // TODO: move jwt to httpOnly cookie rather than localstorage
+      localStorage.setItem(USER_ID, login.user.id);
       history.push("/");
       setLoggedIn(true);
     },
