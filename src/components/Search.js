@@ -3,7 +3,7 @@ import { Dropdown, Icon, Input, Menu } from "semantic-ui-react";
 
 const Search = ({ setFilter, setSortBy }) => {
   const [searchData, setSearchData] = useState("");
-  const [orderBy, setOrderBy] = useState({ orderBy: "createdAt", asc: true });
+  const [orderBy, setOrderBy] = useState({ orderBy: "createdAt", asc: false });
   const options = [
     { key: "new", text: "new", value: "createdAt", icon: "calendar outline" },
     { key: "top", text: "top", value: "votes", icon: "star" },

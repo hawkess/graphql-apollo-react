@@ -15,7 +15,7 @@ import Search from "./Search";
 
 const LinkList = () => {
   const [filter, setFilter] = useState("");
-  const [sortBy, setSortBy] = useState({ orderBy: "createdAt", asc: true });
+  const [sortBy, setSortBy] = useState({ orderBy: "createdAt", asc: false });
   const orderBy = { [sortBy.orderBy]: sortBy.asc === true ? "asc" : "desc" };
   const { data, loading, error } = useQuery(FEED_SEARCH_QUERY, {
     variables: { filter: filter, orderBy: orderBy },
