@@ -1,3 +1,5 @@
+const { argsToArgsConfig } = require("graphql/type/definition");
+
 async function feed(parent, args, context, info) {
   const where = args.filter
     ? {
@@ -7,11 +9,13 @@ async function feed(parent, args, context, info) {
         ],
       }
     : {};
-
-  const order =
-    args.orderBy && "votes" in args.orderBy
-      ? { votes: { count: args.orderBy.votes } }
-      : args.orderBy;
+  let order = {};
+  if (args.orderBy) {
+    order =
+      "votes" in args.orderBy
+        ? { votes: { count: args.orderBy.votes } }
+        : args.orderBy;
+  }
 
   const links = await context.prisma.link.findMany({
     where,
