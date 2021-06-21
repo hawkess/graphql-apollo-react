@@ -27,12 +27,17 @@ const LinkList = () => {
   const indexSplit = history.location.pathname.split("/");
   const page = parseInt(indexSplit[indexSplit.length - 1]);
   const pageIndex = page ? (page - 1) * LINKS_PER_PAGE : 0;
+  const feedfilter = {
+    filter: filter,
+    orderBy: orderBy,
+    skip: pageIndex,
+    take: LINKS_PER_PAGE,
+  };
   const { data, loading, error, subscribeToMore } = useQuery(
     FEED_SEARCH_QUERY,
     {
       variables: {
-        filter: filter,
-        orderBy: orderBy,
+        feedfilter: feedfilter,
       },
     }
   );
@@ -61,7 +66,6 @@ const LinkList = () => {
   subscribeToMore({
     document: NEW_VOTES_SUBSCRIPTION,
   });
-
   return (
     <Container id="link-list" text>
       <Segment>

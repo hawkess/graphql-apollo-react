@@ -1,33 +1,31 @@
-const { argsToArgsConfig } = require("graphql/type/definition");
-
-async function feed(parent, args, context, info) {
-  const where = args.filter
+async function feed(parent, { feedfilter }, context, info) {
+  const where = feedfilter.filter
     ? {
         OR: [
-          { description: { contains: args.filter } },
-          { url: { contains: args.filter } },
+          { description: { contains: feedfilter.filter } },
+          { url: { contains: feedfilter.filter } },
         ],
       }
     : {};
   let order = {};
-  if (args.orderBy) {
+  if (feedfilter.orderBy) {
     order =
-      "votes" in args.orderBy
-        ? { votes: { count: args.orderBy.votes } }
-        : args.orderBy;
+      "votes" in feedfilter.orderBy
+        ? { votes: { count: feedfilter.orderBy.votes } }
+        : feedfilter.orderBy;
   }
 
   const links = await context.prisma.link.findMany({
     where,
-    skip: args.skip,
-    take: args.take,
+    skip: feedfilter.skip,
+    take: feedfilter.take,
     orderBy: order,
   });
 
   const count = await context.prisma.link.count({ where });
 
   return {
-    id: "main-feed",
+    id: "test-feed",
     links,
     count,
   };

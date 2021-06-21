@@ -4,7 +4,6 @@ import { useMutation } from "@apollo/client";
 import { Button, Form, Grid, Header, Segment } from "semantic-ui-react";
 
 import { FEED_SEARCH_QUERY } from "../graphql/queries";
-import { LINKS_PER_PAGE } from "../utils/const";
 import { CREATE_LINK_MUTATION } from "../graphql/mutations";
 import { CREATE_LINK_ERROR_FIELDS } from "../utils/const";
 import { handleError } from "../utils/errorHelper";
@@ -28,10 +27,7 @@ const CreateLink = (props) => {
     refetchQueries: [
       {
         query: FEED_SEARCH_QUERY,
-        variables: {
-          filter: "",
-          orderBy: { createdAt: "asc" },
-        },
+        variables: {},
       },
     ],
     onCompleted: () => history.push("/"),

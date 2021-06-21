@@ -24,13 +24,8 @@ export const FEED_QUERY = gql`
 `;
 
 export const FEED_SEARCH_QUERY = gql`
-  query feedSearch(
-    $filter: String
-    $orderBy: LinkOrderByInput
-    $skip: Int
-    $take: Int
-  ) {
-    feed(filter: $filter, orderBy: $orderBy, skip: $skip, take: $take) {
+  query feedSearch($feedfilter: FeedFilters) {
+    feed(feedfilter: $feedfilter) {
       links {
         id
         url
